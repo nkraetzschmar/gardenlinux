@@ -7,7 +7,7 @@ import boto3
 from .sshclient import RemoteClient
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 class AWS:
     """Handle resources in AWS cloud"""
@@ -49,12 +49,16 @@ class AWS:
                 aws_secret_access_key=self.config["secret_access_key"],
                 region_name=self.config["region"],
             )
+        elif self.config["region"]:
+            self.session = boto3.Session(region_name=self.config["region"])
         else:
             self.session = boto3.Session()
         self.client = self.session.client("ec2")
         self.ec2 = self.session.resource("ec2")
         self.security_group_id = None
         self.instance = None
+        self.instance_type = config["instance_type"]
+
 
     def __del__(self):
         """Cleanup resources held by this object"""
@@ -167,6 +171,7 @@ class AWS:
         ami_id = self.config["ami_id"]
         key_name = self.config["key_name"]
         ssh_key_filepath = path.expanduser(self.config["ssh_key_filepath"])
+        logger.debug("ssh_key_filepath: %s" % ssh_key_filepath)
 
         if not ssh_key_filepath:
             ssh_key_filepath = "gardenlinux-test"
@@ -194,7 +199,7 @@ class AWS:
                 }
             ],
             ImageId=ami_id,
-            InstanceType="t2.micro",
+            InstanceType=self.instance_type,
             KeyName=key_name,
             MaxCount=1,
             MinCount=1,
