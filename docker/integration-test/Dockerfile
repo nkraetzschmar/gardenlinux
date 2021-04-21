@@ -1,5 +1,5 @@
 FROM gardenlinux/slim
-ENV	DEBIAN_FRONTEND noninteractive
+ENV  DEBIAN_FRONTEND noninteractive
 ENV  SHELL=/bin/bash
 RUN	apt-get update \
      &&	apt-get install -y --no-install-recommends \
