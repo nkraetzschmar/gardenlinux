@@ -89,15 +89,15 @@ $(cat $srcDir/changelog)
 
 EOF
 
-touch debian/changelog.newkernel
-cat debian/changelog.new debian/changelog.newkernel debian/changelog.org > debian/changelog
-rm -f debian/changelog.new debian/changelog.newkernel debian/changelog.org
+cd ..
+# checking out linux stable to have the whole changelog from the kernel readable for debian/bin/stable-update
+git clone --single --branch linux-$(echo $KERNEL_BASE | sed s/0$/y/) --bare https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+cd $src
 
-echo "### setting certificate"
-# to make sure we do not take this accidently
-rm -f debian/certs/debian-uefi-certs.pem
-cp /kernel.full debian/certs/gardenlinux-kernel-certs.pem
-sed -i "s/debian-uefi-certs.pem/gardenlinux-kernel-certs.pem/" debian/config/config debian/config/featureset*/config
+debian/bin/stable-update ../linux-stable.git $KERNEL_VERSION
+cat debian/changelog debian/changelog.tmp > debian/changelog.new
+mv debian/changelog.new debian/changelog
+rm debian/changelog.tmp
 
 echo "### generating a debian conform orig file and install"
 [ -e ../orig/linux_*.tar.xz ] || PYTHONHASHSEED=0 debian/bin/genorig.py ../linux-*.tar.xz
