@@ -22,6 +22,7 @@ class PublishingAction(enum.Enum):
     IMAGES = 'images'
     RELEASE = 'release'
     BUILD_ONLY = 'build_only'
+    RUN_TESTS = 'run_tests'
 
 
 class FeatureType(enum.Enum):
