@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 import yaml
 
@@ -88,7 +89,8 @@ def run_tests(
     )
     logger.info(f'registered {initial_ami_id=}')
 
-    with open(os.path.join(repo_dir, 'tests', 'test_config.yaml')) as f:
+    test_config_path = os.path.join(repo_dir, 'tests', 'test_config.yaml')
+    with open(test_config_path) as f:
         existing_config = yaml.safe_load(f.read())
 
     aws_test_cfg = existing_config['aws']
@@ -97,11 +99,19 @@ def run_tests(
     aws_test_cfg['secret_access_key'] = aws_cfg.secret_access_key()
     aws_test_cfg['ami_id'] = initial_ami_id
 
-    with open(os.path.join(repo_dir, 'tests', 'test_config.yaml'), 'w') as f:
+    with open(test_config_path, 'w') as f:
         yaml.dump(existing_config, f)
 
     import pprint
     pprint.pprint(existing_config)
+
+    sys.path.insert(1, os.path.abspath(os.path.join(repo_dir, 'tests', 'full')))
+    import run_full_test
+
+    run_full_test.run_test(
+        path=None,
+        config=test_config_path,
+        debug=True)
 
     result = True
     print("Running integration tests")

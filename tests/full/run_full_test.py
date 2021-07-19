@@ -26,36 +26,34 @@ logger.addHandler(handler)
 
 class FullTest:
 
-    def __init__(self, args):
+    def __init__(self, path, debug, config):
 
-        self.config_file = args.config
+        self.config_file = config
         try:
-            with open(args.config) as f:
+            with open(config) as f:
                 self.config = yaml.load(f, Loader=yaml.FullLoader)
         except OSError as e:
             logger.exception(e)
             exit(1)
-        
+
         self.repo_root = pathlib.Path(__file__).parent.parent.parent
-        self.debug = args.debug
+        self.debug = debug
         self.aws_config = config['aws']
         self.ec2 = boto3.client('ec2')
         self.s3 = boto3.client('s3')
 
-
     @classmethod
-    def init(cls, path, debug):
-        return FullTest(args)
+    def init(cls, path, debug, config):
+        return FullTest(path, debug, config)
         try:
             with open(path) as f:
                 options = yaml.load(f, Loader=yaml.FullLoader)
         except OSError as e:
             logger.exception(e)
             exit(1)
-        
+
         repo_root = pathlib.Path(__file__).parent.parent.parent
         return FullTest(options, repo_root, debug)
-
 
     def upload_ssh_key(self):
 
@@ -65,7 +63,7 @@ class FullTest:
             return
         else:
             self.ec2.import_key_pair(KeyName=config.aws.key_name, PublicKeyMaterial=config.aws.ssh_key)
-        
+
     def delete_ssh_key(self):
 
         self.ec2.delete_delete_key_pair(KeyName=self.config.aws.key_name)
@@ -76,7 +74,7 @@ class FullTest:
         if o.scheme != 'file':
             raise NotImplementedError("Only local image file uploads implemented.")
         image_file = o.path
-        cmd = [os.path.join(self.repo_root, "bin","make-ec2-ami"), 
+        cmd = [os.path.join(self.repo_root, "bin","make-ec2-ami"),
             "--bucket", self.aws_config["bucket"],
             "--region", self.aws_config["region"],
             "--image-name", self.aws_config["image_name"],
@@ -147,7 +145,7 @@ class FullTest:
         delete_ssh_key()
 
 
-def main():
+def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--provider',
@@ -169,8 +167,26 @@ def main():
         logger.setLevel(logging.DEBUG)
         handler.setLevel(logging.DEBUG)
 
-    full = FullTest.init(args)
+    return args
+
+
+def run_test(path, debug, config):
+    full = FullTest.init(
+        path=path,
+        debug=debug,
+        config=config,
+    )
     full.run()
+
+
+def main():
+    args = parse_args()
+    run_test(
+        path=args.path,
+        debug=args.debug,
+        config=args.config,
+    )
+
 
 if __name__ == "__main__":
     main()
