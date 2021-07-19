@@ -507,6 +507,7 @@ def test_task(
 
     test_step = steps.test_step(
         architecture=params.arch,
+        committish=params.committish,
         cicd_cfg_name=params.cicd_cfg_name,
         gardenlinux_epoch=params.glepoch,
         modifiers=params.modifiers,
