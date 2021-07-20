@@ -100,16 +100,16 @@ class FullTest:
             return False
 
 
-    def delete_image(self, config):
+    def delete_image(self):
 
         # (1) ami
-        self.ec2.deregister_image(config['ami-id'])
+        self.ec2.deregister_image(self.config['ami-id'])
 
         # (2) snapshot
-        self.ec2.delete_snapshot(config['snapshot-id'])
+        self.ec2.delete_snapshot(self.config['snapshot-id'])
 
         # (3) bucket
-        if config['image-uploaded'] == True:
+        if self.config['image-uploaded'] == True:
             self.s3.delete_object(Bucket='%s',Key='%s' % (self.aws_config['bucket'], self.aws_config['image_name']))
 
 
@@ -137,12 +137,13 @@ class FullTest:
             with open("/tmp/test_config_amended.yaml", "wb") as f:
                 f.write(yaml.dump(self.config))
 
-        if self.new_config_file in not None:
-            self.run_integration_test(self.new_config_file)
+        if self.new_config_file is not None:
+            config_file = self.new_config_file
         else:
-            self.run_integration_test(self.config_file)
-        delete_image()
-        delete_ssh_key()
+            config_file = self.config_file
+        self.run_integration_test(config_file)
+        self.delete_image()
+        self.delete_ssh_key()
 
 
 def parse_args():
