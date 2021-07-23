@@ -95,12 +95,12 @@ def run_tests(
 
     params_plugin = PyTestParamsPlugin(params)
 
+    test_dir = os.path.join(repo_dir, "integration_tests")    
     if not os.path.exists(test_dir):
         print(f'Path for running tests: {test_dir} does not exist. Stopping')
         return 1
 
     print("Running integration tests")
-    test_dir = os.path.join(repo_dir, "integration_tests")    
     result = pytest.main([test_dir], plugins=[params_plugin])    
     print(f'Integration tests finished with result {result=}')
     return result
