@@ -4,7 +4,7 @@ import typing
 
 import tkn.model
 
-IMAGE_VERSION = '1.1388.0'
+IMAGE_VERSION = '1.1398.0'
 DEFAULT_IMAGE = f'eu.gcr.io/gardener-project/cc/job-image:{IMAGE_VERSION}'
 KANIKO_IMAGE = f'eu.gcr.io/gardener-project/cc/job-image-kaniko:{IMAGE_VERSION}'
 
@@ -646,6 +646,7 @@ def test_step(
     suite: tkn.model.NamedParam,
     snapshot_timestamp: tkn.model.NamedParam,
     version: tkn.model.NamedParam,
+    pytest_cfg: tkn.model.NamedParam,
     env_vars: typing.List[typing.Dict] = [],
     volume_mounts: typing.List[typing.Dict] = [],
 ):
@@ -669,6 +670,7 @@ def test_step(
                 snapshot_timestamp,
                 suite,
                 version,
+                pytest_cfg,
             ],
         ),
         volumeMounts=volume_mounts,

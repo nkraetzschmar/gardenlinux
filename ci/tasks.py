@@ -490,7 +490,6 @@ def build_task(
 
 
 def test_task(
-    publishing_actions,
     env_vars,
     volume_mounts,
     volumes=[],
@@ -505,6 +504,14 @@ def test_task(
         volume_mounts=volume_mounts,
     )
 
+    publishing_actions = NamedParam(name='publishing_actions')
+
+    pytest_cfg = NamedParam(
+        name='pytest_cfg',
+        description='configuration name of testsuite in file test_cfg.yaml',
+        default='default',
+    )
+
     test_step = steps.test_step(
         architecture=params.arch,
         committish=params.committish,
@@ -517,6 +524,7 @@ def test_task(
         suite=params.suite,
         snapshot_timestamp=params.snapshot_ts,
         version=params.version,
+        pytest_cfg=pytest_cfg,
         env_vars=env_vars,
         volume_mounts=volume_mounts,
     )
@@ -552,6 +560,7 @@ def test_task(
                 params.snapshot_ts,
                 params.suite,
                 params.version,
+                pytest_cfg,
             ],
             steps=[
                 clone_step,
