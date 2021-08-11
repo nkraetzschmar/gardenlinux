@@ -1,3 +1,4 @@
+import contextlib
 import dataclasses
 import datetime
 import json
@@ -48,6 +49,16 @@ class PyTestParamsPlugin:
     @pytest.fixture(scope="session")
     def test_params(self, request) -> TestRunParameters:
         return self.params
+
+
+@contextlib.contextmanager
+def pushd(new_dir):
+    previous_dir = os.getcwd()
+    os.chdir(new_dir)
+    try:
+        yield
+    finally:
+        os.chdir(previous_dir)
 
 
 def _get_test_suite_from_platform(
@@ -146,8 +157,9 @@ def run_tests(
         pytest_arg_list = pytest_args.split()
 
     print(f'Running integration tests with pytest args: {pytest_arg_list}')
-    result = pytest.main(pytest_arg_list, plugins=[params_plugin])
-    print(f'Integration tests finished with result {result=}')
+    with pushd(repo_dir):
+        result = pytest.main(pytest_arg_list, plugins=[params_plugin])
+        print(f'Integration tests finished with result {result=}')
 
     # Store result for later upload in manifest in file
     test_results = glci.model.ReleaseTestResult(
@@ -157,11 +169,10 @@ def run_tests(
         test_timestamp=datetime.datetime.now().isoformat(),
     )
 
-    outfile_name = 'test_results.json'
+    outfile_name = os.path.join(repo_dir, 'test_results.json')
+    print(f'Test results written to {outfile_name}')
+
     with open(outfile_name, 'w') as f:
         json.dump(dataclasses.asdict(glci.util._json_serialisable_manifest(test_results)), f)
 
-    print(f'Test results written to {outfile_name}')
-    if result != pytest.ExitCode.OK:
-        sys.exit(result)
     return result

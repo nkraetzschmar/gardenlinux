@@ -68,6 +68,12 @@ def upload_test_results(
     modifiers = tuple(modifiers.split(','))
 
     test_result_file_name = os.path.join(repo_dir, 'test_results.json')
+    if not os.path.exists(test_result_file_name):
+        print("No file found with test results, tests did not run, won't upload.")
+        print("Exiting with failure, see logs from previous steps")
+        sys.exit(1)
+
+    print(f'Loading test-results from previous steps from: {test_result_file_name}')
     with open(test_result_file_name, 'r') as f:
         test_result = json.load(f)
 
@@ -108,7 +114,7 @@ def upload_test_results(
     print(f'downloaded manifest: {type(manifest)=}')
 
     # copy manifest and attach test_results
-    new_manifest = manifest.with_test_result(test_result)
+    new_manifest = manifest.with_test_result(glci.util._json_serialisable_manifest(test_result))
     # upload manifest
     manifest_path_suffix = manifest.canonical_release_manifest_key_suffix()
     manifest_path = f'{glci.model.ReleaseManifest.manifest_key_prefix}/{manifest_path_suffix}'
@@ -119,3 +125,8 @@ def upload_test_results(
       manifest=new_manifest,
     )
     print(f'uploaded updated manifest: {new_manifest.test_result=}')
+
+    if test_result.test_result != glci.model.TestResultCode.OK:
+        print('Upload successful')
+        print('Step is failing due to previous test errors, see logs from previous steps')
+        sys.exit(1)
