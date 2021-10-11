@@ -40,7 +40,11 @@ done
 for i in $(echo "base,$features" | tr ',' '\n' | norm_features); do
 	if [ -f $featureDir/$i/exec.config ]; then
 		echo "executing from $i: exec.config"
+		mkdir "$targetDir/cert"
+		mount --bind "/cert" "$targetDir/cert"
 		$thisDir/garden-chroot "$targetDir" bash -c "$(cat $featureDir/$i/exec.config)"
+		umount "$targetDir/cert"
+		rmdir "$targetDir/cert"
 	fi
 done
 
@@ -68,4 +72,3 @@ done
 #	cp -a "$targetDir/usr/sbin/policy-rc.d" "$targetDir/sbin/initctl"
 #	sed -i 's/^exit.*/exit 0/' "$targetDir/sbin/initctl"
 #fi
-
