@@ -70,7 +70,7 @@ After installation the VM will reboot into ONIE. It will start auto-discovery of
 
 ### Handy virsh commands
 
-* exit the console using the escape key Ctrl + ] (German Mac keyboard: Strg + Opt + 6)
+* exit the console using the escape key `Ctrl + ]` (German Mac keyboard: Strg + Opt + 6)
 * reconnect to the console using the virsh console command `sudo virsh --connect qemu:///session console gardenlinux-onie`
 * stop the VM using the command `sudo virsh --connect qemu:///session destroy gardenlinux-onie`
 * delete the VM using `sudo virsh --connect qemu:///session undefine gardenlinux-onie`.
@@ -84,3 +84,5 @@ Use the one referenced in SONiC instead:
 https://github.com/Azure/sonic-buildimage/blob/master/platform/broadcom/sai.mk
 
 The required Linux kernel is referenced via the `sonic-linux-kernel` submodule at https://github.com/Azure/sonic-buildimage/tree/master/src
+
+SAI upstream repo: https://github.com/opencomputeproject/SAI
