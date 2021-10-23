@@ -58,11 +58,11 @@ Then create the VM:
         --cdrom $(pwd)/build/images/*.iso \
         --network default
 
-virt-install will create an empty VM disk image `gardenlinux-onie-dev.img` and start the VM. Be quick and select the `ONIE: Embed ONIE` option from the boot menu to install ONIE on the VM's disk.
+virt-install will create an empty VM disk image `build/images/gardenlinux-onie-vm.img` and start the VM. Be quick and select the `ONIE: Embed ONIE` option from the boot menu to install ONIE on the VM's disk.
 After installation the VM will reboot into ONIE. It will start auto-discovery of a NOS installer image and pick it up from the nginx server configured above (`http://192.168.122.1/onie-installer-x86_64.bin`). ONIE will execute the gardenlinux-onie installer and then reboots into Garden Linux.
 
 
-### Handy virsh commands:
+### Handy virsh commands
 
 * exit the console using the escape key Ctrl + ] (German Mac keyboard: Strg + Opt + 6)
 * reconnect to the console using the virsh console command `sudo virsh --connect qemu:///session console gardenlinux-onie`
