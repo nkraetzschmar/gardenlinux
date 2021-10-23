@@ -24,6 +24,8 @@ Now you have to create the ONIE environment. Easiest way is to clone the ONIE re
 
 You will find the ONIE images in the `build/images` directory.
 
+> Note that ONIE also provides a demo NOS installer. You can build it using `make -j4 MACHINE=kvm_x86_64 demo`. You can find the source code at https://github.com/opencomputeproject/onie/tree/2021.08/demo.
+
 To create a VM you need to install libvirt. And create a default libvirt network:
 
     sudo apt-get install qemu-system libvirt-clients libvirt-daemon-system virtinst
