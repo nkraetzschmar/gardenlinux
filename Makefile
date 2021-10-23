@@ -139,6 +139,9 @@ metal-dev: docker-build cert/sign.pub
 metalk: docker-build cert/sign.pub
 	./build.sh --no-build --features server,metal,chost,khost,_pxe $(BUILDDIR)/metalk $(SNAPSHOT_DATE)
 
+onie: docker-build cert/sign.pub
+	./build.sh --no-build --features server,onie,_dev $(BUILDDIR)/onie $(VERSION)
+
 clean:
 	@echo "emptying $(BUILDDIR)"
 	@rm -rf $(BUILDDIR)/*
