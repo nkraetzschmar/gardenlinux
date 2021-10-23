@@ -83,4 +83,4 @@ The SAI at https://github.com/Broadcom-Switch/SAI is old.
 Use the one referenced in SONiC instead:
 https://github.com/Azure/sonic-buildimage/blob/master/platform/broadcom/sai.mk
 
-The required Linux kernel is referenced at https://github.com/Azure/sonic-buildimage/tree/master/src sonic-linux-kernel.
+The required Linux kernel is referenced via the `sonic-linux-kernel` submodule at https://github.com/Azure/sonic-buildimage/tree/master/src
