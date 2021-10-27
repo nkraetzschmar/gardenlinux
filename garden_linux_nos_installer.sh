@@ -33,6 +33,10 @@ grub-install --boot-directory="$mnt" --recheck "$blk_dev"
 
 . /mnt/onie-boot/onie/grub/grub-variables
 
+kernel="$(cd "$mnt/boot/" && find . -name 'vmlinuz-*-amd64' | sed 's#^\./##' | tail -n 1)"
+initramfs="$(cd "$mnt/boot/" && find . -name 'initrd.img-*-amd64' | sed 's#^\./##' | tail -n 1)"
+[ -b "$kernel" ] && [ -b "$initramfs" ]
+
 cat <<EOF > "$mnt/grub/grub.cfg"
 $GRUB_SERIAL_COMMAND
 terminal_input $GRUB_TERMINAL_INPUT
@@ -42,8 +46,8 @@ set timeout=5
 
 menuentry 'Garden Linux' {
         search --no-floppy --label --set=root $ROOT_PART_LABEL
-        linux   /boot/vmlinuz-5.10.0-9-amd64 $GRUB_CMDLINE_LINUX \$ONIE_EXTRA_CMDLINE_LINUX root=LABEL=ROOT rw
-        initrd  /boot/initrd.img-5.10.0-9-amd64
+        linux   /boot/$kernel $GRUB_CMDLINE_LINUX \$ONIE_EXTRA_CMDLINE_LINUX root=LABEL=ROOT rw
+        initrd  /boot/$initramfs
 }
 EOF
 
