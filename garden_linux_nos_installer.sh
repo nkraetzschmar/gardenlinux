@@ -42,7 +42,7 @@ set timeout=5
 
 menuentry 'Garden Linux' {
         search --no-floppy --label --set=root $ROOT_PART_LABEL
-        linux   /boot/vmlinuz-5.10.0-9-amd64 $GRUB_CMDLINE_LINUX \$ONIE_EXTRA_CMDLINE_LINUX root=LABEL=ROOT ro
+        linux   /boot/vmlinuz-5.10.0-9-amd64 $GRUB_CMDLINE_LINUX \$ONIE_EXTRA_CMDLINE_LINUX root=LABEL=ROOT rw
         initrd  /boot/initrd.img-5.10.0-9-amd64
 }
 EOF
