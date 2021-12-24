@@ -27,7 +27,7 @@ wget
 less
 tcpdump
 vim-tiny
-quota
+[${arch}=amd64] quota
 nvme-cli
 selinux-basics
 selinux-policy-default

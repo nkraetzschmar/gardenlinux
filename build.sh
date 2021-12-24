@@ -33,7 +33,7 @@ lessram=
 arch=
 features=
 disablefeatures=
-tests=1
+tests=0
 output=".build"
 while true; do
 	flag="$1"; shift
